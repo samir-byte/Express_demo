@@ -1,3 +1,5 @@
+const startupDebugger = require('debug')('app:startup');
+const dbDebugger = require('debug')('app:db');
 const config = require('config');
 const express = require('express');
 const app = express();
@@ -6,6 +8,8 @@ const logger = require('./logger');
 const auth = require('./authentication');
 const helmet = require("helmet");
 const morgan = require('morgan')
+
+app.set('view engine', 'pug');
 
 // console.log(`Node env: ${process.env.NODE_ENV}`)
 
@@ -21,7 +25,7 @@ console.log('mail password: ' + config.get('mail.password'));
 
 if (app.get('env') === 'development') {
     app.use(morgan('tiny'));
-    console.log('morgan enabled ..');
+    startupDebugger('morgan enabled ..');
 }
 
 
@@ -37,7 +41,10 @@ const courses = [
 ];
 
 app.get('/', (req,res) => {
-    res.send('Hello world');
+    res.render('index', {
+        title: "my express app",
+        message: "Welcome to my Express demo"
+    });
 });
 
 app.get('/api/courses', (req,res)=>{
